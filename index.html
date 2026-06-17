@@ -162,7 +162,6 @@ margin-top: 10px;
 }
 .btn-secondary:hover { background-color: #30363d; }
 
-/* Help Desk Menu Grid */
 .help-menu-grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -185,7 +184,6 @@ background-color: #30363d;
 border-color: var(--warning-orange);
 }
 
-/* Mobile-Ready Modal Containers */
 .modal {
 display: none;
 position: fixed;
@@ -238,7 +236,6 @@ margin-bottom: 4px;
 <h1>Ontario Roadside E-Bike Inspection Portal</h1>
 
 <div class="grid">
-<!-- LEFT PANEL: ROADSIDE CHECKLIST -->
 <div class="card">
 <h2>1. Physical Device Thresholds</h2>
 <div class="row-inputs">
@@ -292,11 +289,9 @@ margin-bottom: 4px;
 <input type="checkbox" id="passenger"> Operator is Carrying a Passenger
 </label>
 
-<!-- SUBMIT INSPECTION BUTTON -->
 <button class="btn" onclick="runInspection()">Submit Inspection Check</button>
 </div>
 
-<!-- RIGHT PANEL: DYNAMIC CHARGES -->
 <div class="card">
 <h2>Legal Status Evaluation</h2>
 <div id="statusBanner" class="status-box status-pending">AWAITING SUBMISSION<br><span style='font-size:0.8rem; font-weight:normal;'>Fill out checklist and tap submit.</span></div>
@@ -310,7 +305,6 @@ margin-bottom: 4px;
 </div>
 </div>
 
-<!-- BOTTOM PANEL: QUICK REFERENCE HELPER -->
 <div class="card" style="margin-top: 15px;">
 <h2>Lawful Help Desk Quick Reference</h2>
 <p style="font-size: 0.85rem; color: #8b949e; margin: 0 0 10px 0;">Tap any button below to view definitions, statutory targets, and short-form wording templates.</p>
@@ -323,8 +317,6 @@ margin-bottom: 4px;
 </div>
 </div>
 </div>
-
-<!-- ================= MODAL WINDOWS FOR HELP DESK ================= -->
 
 <div id="pabHelp" class="modal">
 <div class="modal-content">
@@ -360,179 +352,3 @@ margin-bottom: 4px;
 </ul>
 </div>
 </div>
-</div>
-
-<div id="equipHelp" class="modal">
-<div class="modal-content">
-<span class="close-btn" onclick="closeModal('equipHelp')">×</span>
-<h2 style="margin-top: 0; border-color: var(--warning-orange);">Safety & Equipment Specifications</h2>
-<div class="help-box">
-<div class="help-title">Brake Performance — HTA s. 64(2)</div>
-<p style="margin: 4px 0 0 0; font-size: 0.85rem;">Must have a front and rear braking system. Must stop the machine within 9 meters while travelling at a speed of 30 km/h on dry asphalt.</p>
-</div>
-<div class="help-box">
-<div class="help-title">Night Visibility — HTA s. 62(17)</div>
-<ul style="margin: 4px 0; padding-left: 20px; font-size: 0.85rem;">
-<li>Front: Lighted white/amber lamp visible from 150m.</li>
-<li>Rear: Lighted red lamp or red reflector.</li>
-<li>Forks: White reflective material striping.</li>
-<li>Rear Frame: Red reflective tape measuring at least 250mm long and 25mm wide.</li>
-</ul>
-</div>
-<div class="help-box">
-<div class="help-title">Audible Device — HTA s. 75(5)</div>
-<p style="margin: 4px 0 0 0; font-size: 0.85rem;">Must be equipped with a functional bell, gong, or horn kept in good working order.</p>
-</div>
-</div>
-</div>
-
-<div id="wordingHelp" class="modal">
-<div class="modal-content">
-<span class="close-btn" onclick="closeModal('wordingHelp')">×</span>
-<h2 style="margin-top: 0; border-color: #f0f6fc;">Offence Short-Form Wordings Reference</h2>
-<div class="help-box">
-<div class="help-title"><span class="sect-badge">CAIA s. 2(1)</span> No Insurance</div>
-<div><strong>Wording:</strong> Operate motor vehicle without insurance. <br><em>*Part III Summons.</em></div>
-</div>
-<div class="help-box">
-<div class="help-title"><span class="sect-badge">HTA s. 32(1)</span> No Licence</div>
-<div><strong>Wording:</strong> Drive motor vehicle - no licence.</div>
-</div>
-<div class="help-box">
-<div class="help-title"><span class="sect-badge">HTA s. 7(1)(a)</span> No Permit</div>
-<div><strong>Wording:</strong> Drive motor vehicle - no permit.</div>
-</div>
-<div class="help-box">
-<div class="help-title"><span class="sect-badge">HTA s. 7(1)(c)</span> No Plates</div>
-<div><strong>Wording:</strong> Drive motor vehicle - no plates displayed.</div>
-</div>
-<div class="help-box">
-<div class="help-title"><span class="sect-badge">HTA s. 38(1)</span> Underage PAB Operator</div>
-<div><strong>Wording:</strong> Drive power-assisted bicycle — under 16 years of age.</div>
-</div>
-<div class="help-box">
-<div class="help-title"><span class="sect-badge">HTA s. 104(1)</span> Helmet Violation</div>
-<div><strong>Wording:</strong> Fail to wear proper helmet on power-assisted bicycle / motorcycle.</div>
-</div>
-</div>
-</div>
-
-<script>
-function runInspection() {
-try {
-const pwrRaw = document.getElementById('pwr').value.trim();
-const spdRaw = document.getElementById('spd').value.trim();
-const weightRaw = document.getElementById('weight').value.trim();
-const ageRaw = document.getElementById('age').value.trim();
-
-// Convert strings to integers safely. Empty boxes resolve directly to 0.
-const pwr = pwrRaw !== "" ? parseInt(pwrRaw, 10) : 0;
-const spd = spdRaw !== "" ? parseInt(spdRaw, 10) : 0;
-const weight = weightRaw !== "" ? parseInt(weightRaw, 10) : 0;
-const age = ageRaw !== "" ? parseInt(ageRaw, 10) : 0;
-
-const pedals = document.getElementById('pedals').checked;
-const label = document.getElementById('label').checked;
-const wheels = document.getElementById('wheels').checked;
-const brakes = document.getElementById('brakes').checked;
-const horn = document.getElementById('horn').checked;
-const lights = document.getElementById('lights').checked;
-const reflectors = document.getElementById('reflectors').checked;
-const helmet = document.getElementById('helmet').checked;
-const passenger = document.getElementById('passenger').checked;
-
-let isMV = false;
-let reasons = [];
-
-// Check conditions
-if (pwrRaw === "" || pwr > 500) { isMV = true; reasons.push(pwrRaw === "" ? "Missing Power" : "Power > 500W"); }
-if (spdRaw === "" || spd > 32) { isMV = true; reasons.push(spdRaw === "" ? "Missing Speed" : "Speed > 32 km/h"); }
-if (weightRaw === "" || weight > 120) { isMV = true; reasons.push(weightRaw === "" ? "Missing Weight" : "Weight > 120kg"); }
-if (!pedals) { isMV = true; reasons.push("No operational pedals"); }
-if (!label) { isMV = true; reasons.push("No compliance label"); }
-if (!wheels) { isMV = true; reasons.push("Non-compliant wheels"); }
-
-const banner = document.getElementById('statusBanner');
-const list = document.getElementById('chargeList');
-list.innerHTML = "";
-
-if (isMV) {
-banner.className = "status-box status-mv";
-banner.innerHTML = "NON-COMPLIANT (MOTOR VEHICLE)<br><span style='font-size:0.8rem; font-weight:normal;'>Stripped of bicycle status: " + reasons.join(", ") + "</span>";
-
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;CAIA 2(1)&lt;/span&gt; &lt;strong&gt;Operate Motor Vehicle — No Insurance&lt;/strong&gt;&lt;/li>;
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 32(1)&lt;/span&gt; &lt;strong&gt;Drive Motor Vehicle — No Licence&lt;/strong&gt;&lt;/li>;
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 7(1)(a)&lt;/span&gt; &lt;strong&gt;Drive Motor Vehicle — No Permit&lt;/strong&gt;&lt;/li>;
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 7(1)(c)&lt;/span&gt; &lt;strong&gt;Drive Motor Vehicle — No Plates Displayed&lt;/strong&gt;&lt;/li>;
-
-if (!helmet) {
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 104(1)&lt;/span&gt; &lt;strong&gt;Fail to wear proper helmet on motorcycle&lt;/strong&gt;&lt;/li>;
-}
-if (passenger) {
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 178(3)&lt;/span&gt; &lt;strong&gt;Motor-assisted bicycle carry passenger&lt;/strong&gt;&lt;/li>;
-}
-} else {
-banner.className = "status-box status-pab";
-banner.innerHTML = "COMPLIANT POWER-ASSISTED BICYCLE<br><span style='font-size:0.8rem; font-weight:normal;'>Vehicle retains bicycle highway status.</span>";
-
-if (ageRaw !== "" && age < 16) {
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 38(1)&lt;/span&gt; &lt;strong&gt;Drive power-assisted bicycle — under 16 years of age&lt;/strong&gt;&lt;/li>;
-}
-if (!helmet) {
-list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 104(1)&lt;/span&gt; &lt;strong&gt;Fail to wear proper helmet on power-assisted bicycle&lt;/strong&gt;&lt;/li>;
-}
-}
-
-if (!brakes) { list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 64(2)&lt;/span&gt; &lt;strong&gt;Operate vehicle with improper brakes&lt;/strong&gt;&lt;/li>; }
-if (!horn) { list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 75(5)&lt;/span&gt; &lt;strong&gt;Fail to equip vehicle with alarm bell, gong or horn&lt;/strong&gt;&lt;/li>; }
-if (!lights) { list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 62(17)&lt;/span&gt; &lt;strong&gt;Improper bicycle light&lt;/strong&gt; (Check timeline parameters)&lt;/li>; }
-if (!reflectors) { list.innerHTML += <li&gt;&lt;span class="sect-badge"&gt;HTA 62(17)&lt;/span&gt; &lt;strong&gt;Missing white fork tape / red rear tape (250x25mm)&lt;/strong&gt;&lt;/li>; }
-
-if (list.innerHTML === "") {
-list.innerHTML = "<li style='color:#56d364;'>✓ No legal infractions identified.</li>";
-}
-} catch(err) {
-alert("Execution Error: " + err.message);
-}
-}
-
-function clearForm() {
-document.getElementById('pwr').value = "";
-document.getElementById('spd').value = "";
-document.getElementById('weight').value = "";
-document.getElementById('age').value = "";
-document.getElementById('pedals').checked = false;
-document.getElementById('label').checked = false;
-document.getElementById('wheels').checked = false;
-document.getElementById('brakes').checked = false;
-document.getElementById('horn').checked = false;
-document.getElementById('lights').checked = false;
-document.getElementById('reflectors').checked = false;
-document.getElementById('helmet').checked = false;
-document.getElementById('passenger').checked = false;
-
-const banner = document.getElementById('statusBanner');
-banner.className = "status-box status-pending";
-banner.innerHTML = "AWAITING SUBMISSION<br><span style='font-size:0.8rem; font-weight:normal;'>Fill out checklist and tap submit.</span>";
-document.getElementById('chargeList').innerHTML = <li style="color:#8b949e; list-style-type:none;"&gt;Submit inspection to generate roadside charges.&lt;/li>;
-}
-
-// Fixed Mobile Event Handlers for Modals
-function openModal(id) {
-var targetModal = document.getElementById(id);
-if(targetModal) { targetModal.style.display = "block"; }
-}
-function closeModal(id) {
-var targetModal = document.getElementById(id);
-if(targetModal) { targetModal.style.display = "none"; }
-}
-
-// Global dismiss setup
-window.onclick = function(event) {
-if (event.target.className === 'modal') {
-event.target.style.display = "none";
-}
-}
-</script>
-</body>
-</html>
