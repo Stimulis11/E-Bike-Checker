@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ontario Roadside E-Bike Portal</title>
+<style>
+:root {
+--bg-color: #0d1117;
+--card-bg: #161b22;
+--border-color: #30363d;
+--text-color: #c9d1d9;
+--text-bright: #f0f6fc;
+--primary-blue: #1f6feb;
+--danger-red: #da3633;
+--success-green: #238636;
+--warning-orange: #d29922;
+}
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+background-color: var(--bg-color);
+color: var(--text-color);
+margin: 0;
+padding: 10px;
+}
+.container {
+max-width: 800px;
+margin: 0 auto;
+}
+h1 {
+text-align: center;
+font-size: 1.4rem;
+color: var(--text-bright);
+background: linear-gradient(90deg, #0d47a1, #1f6feb);
+padding: 12px;
+border-radius: 6px;
+margin-bottom: 15px;
+border: 1px solid var(--border-color);
+}
+h2 {
+font-size: 1.1rem;
+border-bottom: 1px solid var(--border-color);
+padding-bottom: 5px;
+color: var(--text-bright);
+margin-top: 20px;
+}
+.grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 15px;
+}
+@media(min-width: 600px) {
+.grid { grid-template-columns: 1fr 1fr; }
+}
+.card {
+background-color: var(--card-bg);
+border: 1px solid var(--border-color);
+border-radius: 8px;
+padding: 15px;
+}
+.form-group {
+margin-bottom: 12px;
+}
+label {
+display: block;
+font-size: 0.9rem;
+font-weight: 600;
+margin-bottom: 4px;
+}
+.row-inputs {
+display: flex;
+gap: 10px;
+}
+input[type="number"] {
+width: 100%;
+background-color: #0d1117;
+border: 1px solid var(--border-color);
+color: var(--text-bright);
+padding: 8px;
+border-radius: 4px;
+font-size: 1rem;
+box-sizing: border-box;
+}
+input[type="number"]::placeholder {
+color: #484f58;
+font-style: italic;
+}
+.chk-group {
+display: flex;
+align-items: flex-start;
+margin-bottom: 10px;
+font-size: 0.9rem;
+cursor: pointer;
+}
+.chk-group input {
+margin-right: 10px;
+transform: scale(1.2);
+margin-top: 3px;
+}
+.status-box {
+padding: 12px;
+border-radius: 6px;
+font-weight: bold;
+text-align: center;
+font-size: 1.1rem;
+margin-bottom: 15px;
+}
+.status-pab {
+background-color: rgba(35, 134, 54, 0.2);
+border: 2px solid var(--success-green);
+color: #56d364;
+}
+.status-mv {
+background-color: rgba(218, 54, 51, 0.2);
+border: 2px solid var(--danger-red);
+color: #ff7b72;
+}
+.status-pending {
+background-color: #21262d;
+border: 2px dashed var(--border-color);
+color: #8b949e;
+}
+ul.charge-list {
+padding-left: 20px;
+margin: 0;
+}
+ul.charge-list li {
+margin-bottom: 10px;
+font-size: 0.95rem;
+color: var(--text-bright);
+}
+.sect-badge {
+background-color: #21262d;
+padding: 2px 6px;
+border-radius: 4px;
+font-family: monospace;
+border: 1px solid var(--border-color);
+color: var(--warning-orange);
+}
+.btn {
+display: block;
+width: 100%;
+background-color: var(--primary-blue);
+color: white;
+border: none;
+padding: 14px;
+border-radius: 6px;
+font-size: 1rem;
+font-weight: bold;
+cursor: pointer;
+margin-top: 15px;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+}
+.btn:hover { background-color: #388bfd; }
+.btn-secondary {
+background-color: #21262d;
+color: var(--text-color);
+border: 1px solid var(--border-color);
+padding: 10px;
+margin-top: 10px;
+}
+.btn-secondary:hover { background-color: #30363d; }
+
+.help-menu-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+gap: 10px;
+margin-top: 15px;
+}
+.btn-help {
+background-color: #21262d;
+color: var(--text-bright);
+border: 1px solid var(--border-color);
+padding: 12px 8px;
+font-size: 0.85rem;
+font-weight: bold;
+border-radius: 6px;
+cursor: pointer;
+text-align: center;
+}
+.btn-help:hover {
+background-color: #30363d;
+border-color: var(--warning-orange);
+}
+
+.modal {
+display: none;
+position: fixed;
+z-index: 9999;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.85);
+overflow-y: auto;
+}
+.modal-content {
+background-color: var(--card-bg);
+margin: 30px auto;
+padding: 20px;
+border: 1px solid var(--border-color);
+width: 85%;
+max-width: 550px;
+border-radius: 8px;
+box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.close-btn {
+color: #8b949e;
+float: right;
+font-size: 32px;
+font-weight: bold;
+cursor: pointer;
+line-height: 24px;
+padding: 5px;
+}
+.close-btn:hover { color: var(--text-bright); }
+.help-box {
+background-color: #0d1117;
+border-left: 4px solid var(--warning-orange);
+padding: 12px;
+font-size: 0.9rem;
+margin-bottom: 12px;
+border-radius: 0 4px 4px 0;
+}
+.help-title {
+font-weight: bold;
+color: var(--text-bright);
+margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Ontario Roadside E-Bike Inspection Portal</h1>
+
+<div class="grid">
+<!-- LEFT PANEL: ROADSIDE CHECKLIST -->
+<div class="card">
+<h2>1. Physical Device Thresholds</h2>
+<div class="row-inputs">
+<div class="form-group" style="flex:1;">
+<label>Motor Power (Watts)</label>
+<input type="number" id="pwr" placeholder="e.g., 500">
+</div>
+<div class="form-group" style="flex:1;">
+<label>Max Speed (km/h)</label>
+<input type="number" id="spd" placeholder="e.g., 32">
+</div>
+</div>
+<div class="form-group">
+<label>Unladen Weight (kg)</label>
+<input type="number" id="weight" placeholder="e.g., 120">
+</div>
+
+<label class="chk-group">
+<input type="checkbox" id="pedals"> Working Pedals Permanently Affixed
+</label>
+<label class="chk-group">
+<input type="checkbox" id="label"> Bilingual Manufacturer Compliance Label Attached
+</label>
+<label class="chk-group">
+<input type="checkbox" id="wheels"> Wheels Match Regulations (&gt;350mm dia / &gt;35mm width)
+</label>
+
+<h2>2. Structural Safety &amp; Equipment</h2>
+<label class="chk-group">
+<input type="checkbox" id="brakes"> Front &amp; Rear Operational Brakes Present
+</label>
+<label class="chk-group">
+<input type="checkbox" id="horn"> Working Alarm Bell, Gong or Horn Present
+</label>
+<label class="chk-group">
+<input type="checkbox" id="lights"> Front Light &amp; Rear Red Light/Reflector (Night/Fog)
+</label>
+<label class="chk-group">
+<input type="checkbox" id="reflectors"> White Fork Tape &amp; 250x25mm Red Rear Reflective Tape
+</label>
+
+<h2>3. Operator Conditions</h2>
+<div class="form-group">
+<label>Operator Age</label>
+<input type="number" id="age" placeholder="e.g., 16">
+</div>
+<label class="chk-group">
+<input type="checkbox" id="helmet"> Helmet Securely Fastened Under Chin
+</label>
+<label class="chk-group">
+<input type="checkbox" id="passenger"> Operator is Carrying a Passenger
+</label>
+
+<!-- SUBMIT INSPECTION BUTTON -->
+<button class="btn" onclick="runInspection()">Submit Inspection Check</button>
+</div>
+
+<!-- RIGHT PANEL: DYNAMIC CHARGES -->
+<div class="card">
+<h2>Legal Status Evaluation</h2>
+<div id="statusBanner" class="status-box status-pending">AWAITING SUBMISSION<br><span style='font-size:0.8rem; font-weight:normal;'>Fill out checklist and tap submit.</span></div>
+
+<h2>Applicable Charges &amp; Violations</h2>
+<ul id="chargeList" class="charge-list">
+<li style="color:#8b949e; list-style-type:none;">Submit inspection to generate roadside charges.</li>
+</ul>
+
+<button class="btn btn-secondary" onclick="clearForm()">Clear Form Fields</button>
+</div>
+</div>
+
+<!-- BOTTOM PANEL: QUICK REFERENCE HELPER -->
+<div class="card" style="margin-top: 15px;">
+<h2>Lawful Help Desk Quick Reference</h2>
+<p style="font-size: 0.85rem; color: #8b949e; margin: 0 0 10px 0;">Tap any button below to view definitions, statutory targets, and short-form wording templates.</p>
+
+<div class="help-menu-grid">
+<button class="btn-help" onclick="openModal('pabHelp')">Bicycle Regs</button>
+<button class="btn-help" onclick="openModal('mvHelp')">Motor Vehicle Law</button>
+<button class="btn-help" onclick="openModal('equipHelp')">Equipment Regs</button>
+<button class="btn-help" onclick="openModal('wordingHelp')">Statute Wordings</button>
+</div>
+</div>
+</div>
+
+<!-- ================= MODAL WINDOWS FOR HELP DESK ================= -->
+
+<div id="pabHelp" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeModal('pabHelp')">&times;</span>
+<h2 style="margin-top: 0; border-color: var(--primary-blue);">O. Reg 369/09 — Power-Assisted Bicycles</h2>
+<div class="help-box">
+<div class="help-title">Strict Legal Criteria</div>
+<ul style="margin: 6px 0; padding-left: 20px; font-size: 0.85rem;">
+<li><strong>Continuous Power:</strong> Max 500 Watts rated power at motor shaft.</li>
+<li><strong>Top Speed Cap:</strong> Hard capped at 32 km/h on level ground motor power alone.</li>
+<li><strong>Weight Boundary:</strong> Total unladen mass cannot exceed 120 kg.</li>
+<li><strong>Functional Pedals:</strong> Must have permanently affixed pedals. If removed or unusable, it defaults to a Motor Vehicle.</li>
+<li><strong>Bilingual Label:</strong> Permanent manufacturer label stating in English and French that it is a "Power-Assisted Bicycle / Bicyclette Assistée".</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="mvHelp" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeModal('mvHelp')">&times;</span>
+<h2 style="margin-top: 0; border-color: var(--danger-red);">Motor Vehicle Classification Laws</h2>
+<div class="help-box">
+<div class="help-title">Fallback Status</div>
+<p style="margin: 4px 0 0 0; font-size: 0.85rem;">Any motorized vehicle that fails to meet even one criterion under O. Reg 369/09 automatically stops being classified as a bicycle and legally defaults to a <strong>Motor Vehicle</strong>.</p>
+</div>
+<div class="help-box">
+<div class="help-title">Roadside Requirements</div>
+<ul style="margin: 6px 0; padding-left: 20px; font-size: 0.85rem;">
+<li><strong>CAIA s. 2(1):</strong> Compulsory Financial Responsibility (Insurance) is mandatory.</li>
+<li><strong>HTA s. 32(1):</strong> Operator must hold a valid driver's licence (Class M, M2, or LSM).</li>
+<li><strong>HTA s. 7(1):</strong> Requires dynamic registration permit and a physical rear plate.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="equipHelp" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeModal('equipHelp')">&times;</span>
+<h2 style="margin-top: 0; border-color: var(--warning-orange);">Safety &amp; Equipment Specifications</h2>
+<div class="help-box">
+<div class="help-title">Brake Performance — HTA s. 64(2)</div>
+<p style="margin: 4px 0 0 0; font-size: 0.85rem;">Must have a front and rear braking system. Must stop the machine within 9 meters while travelling at a speed of 30 km/h on dry asphalt.</p>
+</div>
+<div class="help-box">
+<div class="help-title">Night Visibility — HTA s. 62(17)</div>
+<ul style="margin: 4px 0; padding-left: 20px; font-size: 0.85rem;">
+<li>Front: Lighted white/amber lamp visible from 150m.</li>
+<li>Rear: Lighted red lamp or red reflector.</li>
+<li>Forks: White reflective material striping.</li>
+<li>Rear Frame: Red reflective tape measuring at least 250mm long and 25mm wide.</li>
+</ul>
+</div>
+<div class="help-box">
+<div class="help-title">Audible Device — HTA s. 75(5)</div>
+<p style="margin: 4px 0 0 0; font-size: 0.85rem;">Must be equipped with a functional bell, gong, or horn kept in good working order.</p>
+</div>
+</div>
+</div>
+
+<div id="wordingHelp" class="modal">
+<div class="modal-content">
+<span class="close-btn" onclick="closeModal('wordingHelp')">&times;</span>
+<h2 style="margin-top: 0; border-color: #f0f6fc;">Offence Short-Form Wordings Reference</h2>
+<div class="help-box">
+<div class="help-title"><span class="sect-badge">CAIA s. 2(1)</span> No Insurance</div>
+<div><strong>Wording:</strong> Operate motor vehicle without insurance. <br><em>*Part III Summons.</em></div>
+</div>
+<div class="help-box">
+<div class="help-title"><span class="sect-badge">HTA s. 32(1)</span> No Licence</div>
+<div><strong>Wording:</strong> Drive motor vehicle - no licence.</div>
+</div>
+<div class="help-box">
+<div class="help-title"><span class="sect-badge">HTA s. 7(1)(a)</span> No Permit</div>
+<div><strong>Wording:</strong> Drive motor vehicle - no permit.</div>
+</div>
+<div class="help-box">
+<div class="help-title"><span class="sect-badge">HTA s. 7(1)(c)</span> No Plates</div>
+<div><strong>Wording:</strong> Drive motor vehicle - no plates displayed.</div>
+</div>
+<div class="help-box">
+<div class="help-title"><span class="sect-badge">HTA s. 38(1)</span> Underage PAB Operator</div>
+<div><strong>Wording:</strong> Drive power-assisted bicycle — under 16 years of age.</div>
+</div>
+<div class="help-box">
+<div class="help-title"><span class="sect-badge">HTA s. 104(1)</span> Helmet Violation</div>
+<div><strong>Wording:</strong> Fail to wear proper helmet on power-assisted bicycle / motorcycle.</div>
+</div>
+</div>
+</div>
+
+<script>
+function runInspection() {
+  try {
+    const pwrRaw = document.getElementById('pwr').value.trim();
+    const spdRaw = document.getElementById('spd').value.trim();
+    const weightRaw = document.getElementById('weight').value.trim();
+    const ageRaw = document.getElementById('age').value.trim();
+
+    // Convert strings to integers safely. Empty boxes resolve directly to 0.
+    const pwr = pwrRaw !== "" ? parseInt(pwrRaw, 10) : 0;
+    const spd = spdRaw !== "" ? parseInt(spdRaw, 10) : 0;
+    const weight = weightRaw !== "" ? parseInt(weightRaw, 10) : 0;
+    const age = ageRaw !== "" ? parseInt(ageRaw, 10) : 0;
+
+    const pedals = document.getElementById('pedals').checked;
+    const label = document.getElementById('label').checked;
+    const wheels = document.getElementById('wheels').checked;
+    const brakes = document.getElementById('brakes').checked;
+    const horn = document.getElementById('horn').checked;
+    const lights = document.getElementById('lights').checked;
+    const reflectors = document.getElementById('reflectors').checked;
+    const helmet = document.getElementById('helmet').checked;
+    const passenger = document.getElementById('passenger').checked;
+
+    let isMV = false;
+    let reasons = [];
+
+    // Check conditions
+    if (pwrRaw === "" || pwr > 500) { isMV = true; reasons.push(pwrRaw === "" ? "Missing Power" : "Power > 500W"); }
+    if (spdRaw === "" || spd > 32) { isMV = true; reasons.push(spdRaw === "" ? "Missing Speed" : "Speed > 32 km/h"); }
+    if (weightRaw === "" || weight > 120) { isMV = true; reasons.push(weightRaw === "" ? "Missing Weight" : "Weight > 120kg"); }
+    if (!pedals) { isMV = true; reasons.push("No operational pedals"); }
+    if (!label) { isMV = true; reasons.push("No compliance label"); }
+    if (!wheels) { isMV = true; reasons.push("Non-compliant wheels"); }
+
+    const banner = document.getElementById('statusBanner');
+    const list = document.getElementById('chargeList');
+    list.innerHTML = "";
+
+    if (isMV) {
+      banner.className = "status-box status-mv";
+      banner.innerHTML = "NON-COMPLIANT (MOTOR VEHICLE)<br><span style='font-size:0.8rem; font-weight:normal;'>Stripped of bicycle status: " + reasons.join(", ") + "</span>";
+
+      list.innerHTML += `<li><span class="sect-badge">CAIA 2(1)</span> <strong>Operate Motor Vehicle — No Insurance</strong></li>`;
+      list.innerHTML += `<li><span class="sect-badge">HTA 32(1)</span> <strong>Drive Motor Vehicle — No Licence</strong></li>`;
+      list.innerHTML += `<li><span class="sect-badge">HTA 7(1)(a)</span> <strong>Drive Motor Vehicle — No Permit</strong></li>`;
+      list.innerHTML += `<li><span class="sect-badge">HTA 7(1)(c)</span> <strong>Drive Motor Vehicle — No Plates Displayed</strong></li>`;
+
+      if (!helmet) {
+        list.innerHTML += `<li><span class="sect-badge">HTA 104(1)</span> <strong>Fail to wear proper helmet on motorcycle</strong></li>`;
+      }
+      if (passenger) {
+        list.innerHTML += `<li><span class="sect-badge">HTA 178(3)</span> <strong>Motor-assisted bicycle carry passenger</strong></li>`;
+      }
+    } else {
+      banner.className = "status-box status-pab";
+      banner.innerHTML = "COMPLIANT POWER-ASSISTED BICYCLE<br><span style='font-size:0.8rem; font-weight:normal;'>Vehicle retains bicycle highway status.</span>";
+
+      if (ageRaw !== "" && age < 16) {
+        list.innerHTML += `<li><span class="sect-badge">HTA 38(1)</span> <strong>Drive power-assisted bicycle — under 16 years of age</strong></li>`;
+      }
+      if (!helmet) {
+        list.innerHTML += `<li><span class="sect-badge">HTA 104(1)</span> <strong>Fail to wear proper helmet on power-assisted bicycle</strong></li>`;
+      }
+    }
+
+    if (!brakes) { list.innerHTML += `<li><span class="sect-badge">HTA 64(2)</span> <strong>Operate vehicle with improper brakes</strong></li>`; }
+    if (!horn) { list.innerHTML += `<li><span class="sect-badge">HTA 75(5)</span> <strong>Fail to equip vehicle with alarm bell, gong or horn</strong></li>`; }
+    if (!lights) { list.innerHTML += `<li><span class="sect-badge">HTA 62(17)</span> <strong>Improper bicycle light</strong> (Check timeline parameters)</li>`; }
+    if (!reflectors) { list.innerHTML += `<li><span class="sect-badge">HTA 62(17)</span> <strong>Missing white fork tape / red rear tape (250x25mm)</strong></li>`; }
+
+    if (list.innerHTML === "") {
+      list.innerHTML = "<li style='color:#56d364;'>&#10003; No legal infractions identified.</li>";
+    }
+  } catch(err) {
+    alert("Execution Error: " + err.message);
+  }
+}
+
+function clearForm() {
+  document.getElementById('pwr').value = "";
+  document.getElementById('spd').value = "";
+  document.getElementById('weight').value = "";
+  document.getElementById('age').value = "";
+  document.getElementById('pedals').checked = false;
+  document.getElementById('label').checked = false;
+  document.getElementById('wheels').checked = false;
+  document.getElementById('brakes').checked = false;
+  document.getElementById('horn').checked = false;
+  document.getElementById('lights').checked = false;
+  document.getElementById('reflectors').checked = false;
+  document.getElementById('helmet').checked = false;
+  document.getElementById('passenger').checked = false;
+
+  const banner = document.getElementById('statusBanner');
+  banner.className = "status-box status-pending";
+  banner.innerHTML = "AWAITING SUBMISSION<br><span style='font-size:0.8rem; font-weight:normal;'>Fill out checklist and tap submit.</span>";
+  document.getElementById('chargeList').innerHTML = `<li style="color:#8b949e; list-style-type:none;">Submit inspection to generate roadside charges.</li>`;
+}
+
+// Modal open/close handlers
+function openModal(id) {
+  var targetModal = document.getElementById(id);
+  if (targetModal) { targetModal.style.display = "block"; }
+}
+function closeModal(id) {
+  var targetModal = document.getElementById(id);
+  if (targetModal) { targetModal.style.display = "none"; }
+}
+
+// Global dismiss: click outside modal-content closes it
+window.onclick = function(event) {
+  if (event.target.className === 'modal') {
+    event.target.style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
